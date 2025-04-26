@@ -6,19 +6,27 @@ import (
 	"log"
 	"os"
 	"strings"
+
+	"github.com/wagbubu/pokedexcli/internal/pokeapi"
 )
 
-func startRepl() {
+func startRepl(cfg *config) {
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Print("Pokedex > ")
 		if scanner.Scan() {
-			userCommand := cleanInput(scanner.Text())[0]
+			var mapName string
+			var userCommand string
+			userInput := cleanInput(scanner.Text())
+			userCommand = cleanInput(scanner.Text())[0]
+			if len(userInput) > 1 {
+				mapName = cleanInput(scanner.Text())[1]
+			}
 			command, found := getCommands()[userCommand]
 			if !found {
 				fmt.Println("Unknown command")
 			} else {
-				err := command.callback()
+				err := command.callback(cfg, mapName)
 				if err != nil {
 					fmt.Println(err)
 				}
@@ -37,11 +45,16 @@ func cleanInput(text string) []string {
 	return cleanStrArr
 }
 
+type config struct {
+	pokeapiClient    pokeapi.Client
+	nextLocationsURL *string
+	prevLocationsURL *string
+}
 
 type cliCommand struct {
 	name string
 	description string
-	callback func() error
+	callback func(*config, string) error
 }
 
 func getCommands() map[string]cliCommand {
@@ -56,6 +69,24 @@ func getCommands() map[string]cliCommand {
 			name: "help",
 			description: "describe all commands",
 			callback: commandHelp,
+		},
+
+		"map": {
+			name: "map",
+			description: "displays the names of first or next 20 location areas in the pokemon world.",
+			callback: commandMapf,
+		},
+
+		"mapb": {
+			name: "mapb",
+			description: "displays the names of previous 20 location areas in the pokemon world.",
+			callback: commandMapb,
+		},
+
+		"explore": {
+			name: "explore <area-name>",
+			description: "show list of pokemon encountered in an area",
+			callback: commandExplore,
 		},
 	}
 }
