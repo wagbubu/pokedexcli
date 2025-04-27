@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func commandExplore(cfg *config, mapName string) error {
 	fmt.Printf("Exploring %v...\n", mapName)
@@ -9,6 +11,8 @@ func commandExplore(cfg *config, mapName string) error {
 	if err != nil {
 		return err
 	}
+
+	fmt.Println(pokemons)
 	for _, v := range pokemons.PokemonEncounters {
 		fmt.Printf("  - %s\n", v.Pokemon.Name)
 	}
