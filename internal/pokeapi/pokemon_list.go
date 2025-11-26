@@ -23,7 +23,10 @@ func (c *Client) PokemonList(mapName string) (EncounterData, error) {
 	}
 
 	pokemonResp := EncounterData{}
-	json.Unmarshal(data, &pokemonResp)
+	err = json.Unmarshal(data, &pokemonResp)
+	if err != nil {
+		return EncounterData{}, err
+	}
 
 	return pokemonResp, nil
 }

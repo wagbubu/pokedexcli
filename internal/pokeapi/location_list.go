@@ -12,6 +12,9 @@ func (c *Client) ListLocations(pageURL *string) (RespShallowLocations, error) {
 		url = *pageURL
 	}
 
+	/*
+	* This code block below is for caching
+	*/
 	if val, ok := c.cache.Get(url); ok {
 		locationsResp := RespShallowLocations{}
 		err := json.Unmarshal(val, &locationsResp)
@@ -19,8 +22,9 @@ func (c *Client) ListLocations(pageURL *string) (RespShallowLocations, error) {
 			return RespShallowLocations{}, err
 		}
 		return locationsResp, nil
-	}
+	} 
 
+	c.cache.PrintCache()
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return RespShallowLocations{}, err
@@ -36,6 +40,8 @@ func (c *Client) ListLocations(pageURL *string) (RespShallowLocations, error) {
 	if err != nil {
 		return RespShallowLocations{}, err
 	}
+
+	c.cache.Add(url, data)
 
 	locationRes := RespShallowLocations{}
 	err = json.Unmarshal(data, &locationRes)

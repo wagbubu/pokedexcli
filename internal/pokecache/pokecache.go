@@ -1,6 +1,7 @@
 package pokecache
 
 import (
+	"fmt"
 	"sync"
 	"time"
 )
@@ -53,5 +54,15 @@ func (c *Cache) reap(now time.Time, last time.Duration) {
 		if v.createdAt.Before(now.Add(-last)) {
 			delete(c.cache, k)
 		}
+	}
+}
+
+func (c *Cache) PrintCache() {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	for name, entry := range c.cache {
+		fmt.Println("Name:", name)
+		fmt.Println("Cache Entry:", entry)
 	}
 }

@@ -12,7 +12,6 @@ func commandExplore(cfg *config, mapName string) error {
 		return err
 	}
 
-	fmt.Println(pokemons)
 	for _, v := range pokemons.PokemonEncounters {
 		fmt.Printf("  - %s\n", v.Pokemon.Name)
 	}

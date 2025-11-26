@@ -18,9 +18,9 @@ func startRepl(cfg *config) {
 			var mapName string
 			var userCommand string
 			userInput := cleanInput(scanner.Text())
-			userCommand = cleanInput(scanner.Text())[0]
+			userCommand = userInput[0]
 			if len(userInput) > 1 {
-				mapName = cleanInput(scanner.Text())[1]
+				mapName = userInput[1]
 			}
 			command, found := getCommands()[userCommand]
 			if !found {

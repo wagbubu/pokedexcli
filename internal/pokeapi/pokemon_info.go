@@ -27,8 +27,10 @@ func (c *Client) GetPokemonInfo(pokemonName string) (Pokemon, error) {
 	}
 
 	pokemon := Pokemon{}
-	json.Unmarshal(data, &pokemon)
-
+	err =	json.Unmarshal(data, &pokemon)
+	if err != nil {
+		return Pokemon{}, err
+	}
 	// prettyJSON, err := json.MarshalIndent(pokemon, "", "  ") // 2 spaces indent
 	// if err != nil {
 	// 	fmt.Println("Error:", err)
